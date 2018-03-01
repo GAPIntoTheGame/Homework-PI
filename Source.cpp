@@ -28,7 +28,7 @@ bool init()
 
 	else
 	{
-		gWindow = SDL_CreateWindow("Moving Red Square", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);	// Create window.
+		gWindow = SDL_CreateWindow("Moving Red Square", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);	// Create window.
 
 		if (gWindow == NULL)	// Check window initialization.
 		{
@@ -89,64 +89,45 @@ int main(int argc, char* argv[])
 
 		SDL_Rect redSquare;
 		redSquare.x = SCREEN_WIDTH / 6;
-		redSquare.y = 0;
+		redSquare.y = 1;
 		redSquare.w = 50;
 		redSquare.h = 50;
 
-		//Fill background
-		//SDL_FillRect(screenSurface, NULL, Blue);
-		//Set the Draw color to blue
-		SDL_SetRenderDrawColor(gRenderer, 65, 105, 255, 255);
-		SDL_RenderClear(gRenderer);
+		float xSpeed = 5, ySpeed = 0, e = 1, g = 0.04, x = redSquare.x, y = redSquare.y, t_1 = 0, t = 0;
+		int sign = 0;
 
-		SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255);	// SET the Draw color for the square.
-		SDL_RenderPresent(gRenderer);						// SDL_UpdateWindowSurface(window);
-
-
-		float xSpeed = 5, ySpeed = 5, e = 0.9, mu = 0, g = 0.04;
-		int t = 0, sign = 0, t_prima = 0;
 
 		for (int i = 0; i < 3000; i++)
 		{
+			/*
 			if (redSquare.x <= 0)
 			{
 				xSpeed = abs(xSpeed);
 				sign = -1;
+				t_1 = 0;
+				x = redSquare.x;
 			}
 			else if (redSquare.x >= SCREEN_WIDTH - 50)
 			{
 				xSpeed = -abs(xSpeed);
 				sign = 1;
+				t_1 = 0;
+				x = redSquare.x;
 			}
-			else if (redSquare.y <= 0)
+			else*/ if (redSquare.y <= 0 && ySpeed != g * t*t)
 			{
-				ySpeed = abs(ySpeed) * e;
+				ySpeed = abs(g*t*t) * e;
 				t = 0;
+				y = redSquare.y;
 			}
-			else if (redSquare.y >= SCREEN_HEIGHT - 50)
+			else if (redSquare.y >= SCREEN_HEIGHT - 50 && ySpeed == g * t*t)
 			{
-				ySpeed = -abs(ySpeed) * e;
+				ySpeed = -abs(g*t*t) * e;
 				t = 0;
-			}	
-
-			if (abs(ySpeed) < 0.8)
-			{
-				mu = 0.01;
-				if (abs(ySpeed) < 0.3)
-				{
-					ySpeed = 0;
-					t_prima++;
-				}
+				y = redSquare.y;
 			}
-			
-
-			if (abs(xSpeed) == mu * t_prima)
-			{
-				return 0;
-			}
-
-			redSquare.x += xSpeed + sign * mu*t_prima;
-			redSquare.y += ySpeed + g*t;
+			//redSquare.x = xSpeed*t_1 + sign * mu*t_prima + x;
+			redSquare.y = ySpeed * t + g * t*t + y;
 
 			SDL_SetRenderDrawColor(gRenderer, 65, 105, 255, 255);
 			SDL_RenderClear(gRenderer);
@@ -157,8 +138,8 @@ int main(int argc, char* argv[])
 			SDL_RenderPresent(gRenderer);
 
 			SDL_Delay(7);
-			t++;
-			
+			t += 0.85;
+			t_1 += 0.85;
 		}
 
 		close();
