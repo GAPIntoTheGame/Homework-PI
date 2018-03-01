@@ -1,4 +1,4 @@
-#include "SDL/include/SDL.h"
+#include "SDL/include/SDL.h"  // It only woks on x86
 #include <iostream>
 #include <cstdio>
 using namespace std;
