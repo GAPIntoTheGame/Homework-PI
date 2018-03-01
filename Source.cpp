@@ -3,27 +3,24 @@
 #include <cstdio>
 using namespace std;
 
-#pragma comment(lib, "sdl/libx86/SDL2.lib")
-#pragma comment(lib, "sdl/libx86/SDL2main.lib")
+#pragma comment(lib, "SDL/libx86/SDL2.lib")
+#pragma comment(lib, "SDL/libx86/SDL2main.lib")
 
 
 const int SCREEN_WIDTH = 1620;
 const int SCREEN_HEIGHT = 780;
 
-SDL_Window* gWindow = NULL;		
-SDL_Renderer* gRenderer = NULL;
-SDL_Surface* gScreenSurface = NULL;
-
-bool init();
-void close();
+SDL_Window* gWindow = nullptr;		// Window itself
+SDL_Renderer* gRenderer = nullptr;   // What appears
+SDL_Surface* gScreenSurface = nullptr;   // Background
 
 bool init()
 {
 	bool success = true;
 
-	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_VIDEO); // passage of time
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) // test if above works
 	{
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		success = false;
@@ -78,9 +75,9 @@ void close()	// SDL shutdown function.
 
 int main(int argc, char* argv[])
 {
-	init();	// Full initialization.
+	init();	
 
-	if (!init())	// Check full initialization.
+	if (!init())
 	{
 		printf("Failed to initialize!\n");
 	}
@@ -91,8 +88,8 @@ int main(int argc, char* argv[])
 		unsigned int Red = SDL_MapRGB(gScreenSurface->format, 255, 0, 0);		// Set Red color (255,0,0)
 
 		SDL_Rect redSquare;
-		redSquare.x = SCREEN_WIDTH / 4;
-		redSquare.y = SCREEN_HEIGHT / 4;
+		redSquare.x = SCREEN_WIDTH / 6;
+		redSquare.y = 0;
 		redSquare.w = 50;
 		redSquare.h = 50;
 
@@ -106,7 +103,7 @@ int main(int argc, char* argv[])
 		SDL_RenderPresent(gRenderer);						// SDL_UpdateWindowSurface(window);
 
 
-		float xSpeed = 5, ySpeed = 5, e = 0.9, mu = 0;
+		float xSpeed = 5, ySpeed = 5, e = 0.9, mu = 0, g = 0.04;
 		int t = 0, sign = 0, t_prima = 0;
 
 		for (int i = 0; i < 3000; i++)
@@ -143,15 +140,13 @@ int main(int argc, char* argv[])
 			}
 			
 
-			if (xSpeed == mu * t_prima)
+			if (abs(xSpeed) == mu * t_prima)
 			{
-				xSpeed = 0;
-				mu = 0;
 				return 0;
 			}
 
 			redSquare.x += xSpeed + sign * mu*t_prima;
-			redSquare.y += ySpeed + 0.045*t;
+			redSquare.y += ySpeed + g*t;
 
 			SDL_SetRenderDrawColor(gRenderer, 65, 105, 255, 255);
 			SDL_RenderClear(gRenderer);
@@ -161,7 +156,7 @@ int main(int argc, char* argv[])
 
 			SDL_RenderPresent(gRenderer);
 
-			SDL_Delay(10);
+			SDL_Delay(7);
 			t++;
 			
 		}
