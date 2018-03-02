@@ -88,24 +88,26 @@ int main(int argc, char* argv[])
 		unsigned int Red = SDL_MapRGB(gScreenSurface->format, 255, 0, 0);		// Set Red color (255,0,0)
 
 		SDL_Rect redSquare;
-		redSquare.x = SCREEN_WIDTH / 6;
-		redSquare.y = 1;
+		redSquare.x = SCREEN_WIDTH / 2;
+		redSquare.y = SCREEN_HEIGHT * (3 / 2);
 		redSquare.w = 50;
 		redSquare.h = 50;
 
-		float xSpeed = 5, ySpeed = 0, e = 1, g = 0.098, x = redSquare.x, y = redSquare.y, t_1 = 0, t = 0, vy = 0;;
-		int sign = 0, p = 0;
+		float xSpeed = 0, ySpeed = 0;
+		float e = 1, g = 0.098, vy_1 = 0, vy_2 = 0, mu = 0.1;
+		float x = redSquare.x, y = redSquare.y;
+		int sign = 0, p = 0, t = 0, t_1 = 0, t_prima = 0;
 
 
 		for (int i = 0; i < 300000; i++)
 		{
-			if (redSquare.y >= SCREEN_HEIGHT - 350 && p==0)
+			if (redSquare.y >= SCREEN_HEIGHT - 50 && p==0)
 			{
-				vy = 2*g * t + ySpeed;
+				vy_1 = 2*g * t + ySpeed;
 				p = 1;
 			}
 
-			/*
+			
 			if (redSquare.x <= 0)
 			{
 				xSpeed = abs(xSpeed);
@@ -120,22 +122,32 @@ int main(int argc, char* argv[])
 				t_1 = 0;
 				x = redSquare.x;
 			}
-			else*//* if (redSquare.y <= 0)
+			else if (redSquare.y <= 0)
 			{
-				ySpeed = abs(g*t*t + ySpeed * t) * e;
-				t = 0;
+				vy_2 = 2 * g*t + ySpeed * e;
+				ySpeed = abs(vy_2);
+				t = 1;
 				y = redSquare.y;
 			}
-			else*/ if (redSquare.y >= SCREEN_HEIGHT - 50)
+			else if (redSquare.y >= SCREEN_HEIGHT - 50)
 			{
-				vy = abs(vy)*e;
-				ySpeed = -abs(vy);
+				vy_1 = abs(vy_1) *e;
+				ySpeed = -abs(vy_1);
 				y = redSquare.y;
 				t = 1;
 			}
-			//redSquare.x = xSpeed*t_1 + sign * mu*t_prima + x;
+			redSquare.x = xSpeed * t_1 + sign * mu*t_prima*t_prima + x;
 			redSquare.y = ySpeed * t + g * t*t + y;
 			
+			if (redSquare.y >= SCREEN_HEIGHT - 50 && abs(vy_1) < 0.5)
+			{
+				t_prima++;
+				if (abs(vy_1) == abs(mu*t_prima))
+				{
+					return 0;
+				}
+			}
+
 			SDL_SetRenderDrawColor(gRenderer, 65, 105, 255, 255);
 			SDL_RenderClear(gRenderer);
 
@@ -146,6 +158,7 @@ int main(int argc, char* argv[])
 
 			SDL_Delay(10);
 			t++;
+			t_1++;
 		}
 
 		close();
