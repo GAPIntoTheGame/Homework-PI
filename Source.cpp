@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 		{
 			if (redSquare.y >= SCREEN_HEIGHT - 350 && p==0)
 			{
-				vy = g * t + ySpeed+8;
+				vy = 2*g * t + ySpeed;
 				p = 1;
 			}
 
