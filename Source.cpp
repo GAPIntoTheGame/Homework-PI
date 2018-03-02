@@ -93,12 +93,18 @@ int main(int argc, char* argv[])
 		redSquare.w = 50;
 		redSquare.h = 50;
 
-		float xSpeed = 5, ySpeed = 0, e = 1, g = 0.04, x = redSquare.x, y = redSquare.y, t_1 = 0, t = 0;
-		int sign = 0;
+		float xSpeed = 5, ySpeed = 0, e = 1, g = 0.098, x = redSquare.x, y = redSquare.y, t_1 = 0, t = 0, vy = 0;;
+		int sign = 0, p = 0;
 
 
-		for (int i = 0; i < 3000; i++)
+		for (int i = 0; i < 300000; i++)
 		{
+			if (redSquare.y >= SCREEN_HEIGHT - 350 && p==0)
+			{
+				vy = g * t + ySpeed+8;
+				p = 1;
+			}
+
 			/*
 			if (redSquare.x <= 0)
 			{
@@ -114,21 +120,22 @@ int main(int argc, char* argv[])
 				t_1 = 0;
 				x = redSquare.x;
 			}
-			else*/ if (redSquare.y <= 0 && ySpeed != g * t*t)
+			else*//* if (redSquare.y <= 0)
 			{
-				ySpeed = abs(g*t*t) * e;
+				ySpeed = abs(g*t*t + ySpeed * t) * e;
 				t = 0;
 				y = redSquare.y;
 			}
-			else if (redSquare.y >= SCREEN_HEIGHT - 50 && ySpeed == g * t*t)
+			else*/ if (redSquare.y >= SCREEN_HEIGHT - 50)
 			{
-				ySpeed = -abs(g*t*t) * e;
-				t = 0;
+				vy = abs(vy)*e;
+				ySpeed = -abs(vy);
 				y = redSquare.y;
+				t = 1;
 			}
 			//redSquare.x = xSpeed*t_1 + sign * mu*t_prima + x;
 			redSquare.y = ySpeed * t + g * t*t + y;
-
+			
 			SDL_SetRenderDrawColor(gRenderer, 65, 105, 255, 255);
 			SDL_RenderClear(gRenderer);
 
@@ -137,9 +144,8 @@ int main(int argc, char* argv[])
 
 			SDL_RenderPresent(gRenderer);
 
-			SDL_Delay(7);
-			t += 0.85;
-			t_1 += 0.85;
+			SDL_Delay(10);
+			t++;
 		}
 
 		close();
