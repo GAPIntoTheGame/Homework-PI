@@ -14,53 +14,6 @@ SDL_Window* gWindow = nullptr;		// Window itself
 SDL_Renderer* gRenderer = nullptr;   // What appears
 SDL_Surface* gScreenSurface = nullptr;   // Background
 
-bool init()
-{
-	bool success = true;
-
-	SDL_Init(SDL_INIT_VIDEO); // passage of time
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) // test if above works
-	{
-		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-		success = false;
-	}
-
-	else
-	{
-		gWindow = SDL_CreateWindow("Moving Red Square", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);	// Create window.
-
-		if (gWindow == NULL)	// Check window initialization.
-		{
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-			success = false;
-		}
-
-		else
-		{
-			gScreenSurface = SDL_GetWindowSurface(gWindow);	// Get window surface.	
-
-			if (gScreenSurface == NULL)	// Check surface initialization.
-			{
-				printf("Surface could not be created! SDL_Error: %s\n", SDL_GetError());
-				success = false;
-			}
-
-			else
-			{
-				gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);	// Create renderer for window.
-
-				if (gRenderer == NULL)	// Check renderer initialization.
-				{
-					printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
-					success = false;
-				}
-			}
-		}
-	}
-
-	return success;
-}
 
 void close()	// SDL shutdown function.
 {
@@ -75,15 +28,15 @@ void close()	// SDL shutdown function.
 
 int main(int argc, char* argv[])
 {
-	init();	
 
-	if (!init())
-	{
-		printf("Failed to initialize!\n");
-	}
+	SDL_Init(SDL_INIT_VIDEO); // passage of time
 
-	else
-	{
+	gWindow = SDL_CreateWindow("Moving Red Square", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);	// Create window.
+
+	gScreenSurface = SDL_GetWindowSurface(gWindow);	// Get window surface.	
+
+	gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);	// Create renderer for window.
+
 		unsigned int Blue = SDL_MapRGB(gScreenSurface->format, 65, 105, 255);	// Set the Blue Background (65,105,225)
 		unsigned int Red = SDL_MapRGB(gScreenSurface->format, 255, 0, 0);		// Set Red color (255,0,0)
 
@@ -164,8 +117,6 @@ int main(int argc, char* argv[])
 		close();
 
 		return 0;
-	}
-
 
 	system("pasue");
 	return 0;
